@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Donation Tracking Dashboard</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    body {
+      font-family: "Poppins", sans-serif;
+      background: linear-gradient(to right, #6dd5fa, #2980b9);
+      margin: 0;
+      padding: 0;
+      color: #fff;
+    }
+
+    header {
+      text-align: center;
+      padding: 20px;
+      background: rgba(0, 0, 0, 0.2);
+      font-size: 28px;
+      font-weight: bold;
+    }
+
+    .dashboard {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-top: 30px;
+    }
+
+    .stats {
+      display: flex;
+      gap: 30px;
+      flex-wrap: wrap;
+      justify-content: center;
+      margin-bottom: 40px;
+    }
+
+    .card {
+      background: rgba(255, 255, 255, 0.2);
+      padding: 20px 40px;
+      border-radius: 15px;
+      text-align: center;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+    }
+
+    .card h2 {
+      font-size: 40px;
+      margin: 10px 0;
+    }
+
+    .table-container {
+      width: 80%;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 15px;
+      padding: 20px;
+      margin-bottom: 40px;
+      overflow-x: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      color: #fff;
+    }
+
+    th, td {
+      padding: 12px;
+      text-align: center;
+    }
+
+    th {
+      background: rgba(255, 255, 255, 0.3);
+    }
+
+    tr:nth-child(even) {
+      background: rgba(255, 255, 255, 0.1);
+    }
+
+    canvas {
+      background: rgba(255,255,255,0.1);
+      border-radius: 15px;
+      padding: 20px;
+      width: 80%;
+      max-width: 600px;
+    }
+  </style>
+</head>
+<body>
+  <header>Donation Tracking Dashboard</header>
+
+  <div class="dashboard">
+    <div class="stats">
+      <div class="card">
+        <h3>Total Donations</h3>
+        <h2 id="totalDonations">₹0</h2>
+      </div>
+      <div class="card">
+        <h3>Total Donors</h3>
+        <h2 id="totalDonors">0</h2>
+      </div>
+    </div>
+
+    <div class="table-container">
+      <h3>Recent Donations</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>Donor Name</th>
+            <th>Amount (₹)</th>
+            <th>Date</th>
+          </tr>
+        </thead>
+        <tbody id="donationTable"></tbody>
+      </table>
+    </div>
+
+    <canvas id="donationChart"></canvas>
+  </div>
+
+  <script>
+    // Dummy data
+    const donations = [
+      { name: "Aarav Mehta", amount: 500, date: "2025-11-01" },
+      { name: "Neha Sharma", amount: 1200, date: "2025-11-03" },
+      { name: "Rahul Gupta", amount: 800, date: "2025-11-05" },
+      { name: "Simran Kaur", amount: 600, date: "2025-11-06" },
+      { name: "Vikram Singh", amount: 1500, date: "2025-11-08" }
+    ];
+
+    // Display total donations and donors
+    const totalDonations = donations.reduce((sum, d) => sum + d.amount, 0);
+    const totalDonors = donations.length;
+
+    document.getElementById("totalDonations").innerText = "₹" + totalDonations;
+    document.getElementById("totalDonors").innerText = totalDonors;
+
+    // Populate table
+    const tableBody = document.getElementById("donationTable");
+    donations.forEach(donation => {
+      const row = `<tr>
+        <td>${donation.name}</td>
+        <td>₹${donation.amount}</td>
+        <td>${donation.date}</td>
+      </tr>`;
+      tableBody.innerHTML += row;
+    });
+
+    // Chart data
+    const ctx = document.getElementById("donationChart").getContext("2d");
+    const chart = new Chart(ctx, {
+      type: "line",
+      data: {
+        labels: donations.map(d => d.date),
+        datasets: [{
+          label: "Donation Amount (₹)",
+          data: donations.map(d => d.amount),
+          borderColor: "#fff",
+          backgroundColor: "rgba(255,255,255,0.3)",
+          borderWidth: 2,
+          fill: true,
+          tension: 0.4
+        }]
+      },
+      options: {
+        responsive: true,
+        plugins: {
+          legend: { labels: { color: "#fff" } }
+        },
+        scales: {
+          x: { ticks: { color: "#fff" }, grid: { color: "rgba(255,255,255,0.2)" } },
+          y: { ticks: { color: "#fff" }, grid: { color: "rgba(255,255,255,0.2)" } }
+        }
+      }
+    });
+  </script>
+</body>
+</html>
